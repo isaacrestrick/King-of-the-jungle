@@ -1,73 +1,116 @@
-//SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.4.22 <0.9.0;
 
-// Solidity files have to start with this pragma.
-// It will be used by the Solidity compiler to validate its version.
-pragma solidity ^0.7.0;
-
-// We import this library to be able to use console.log
 import "hardhat/console.sol";
 
+contract SafeMath {
+    function safeAdd(uint a, uint b) public pure returns (uint c) {
+        c = a + b;
+        require(c >= a);
+    }
+ 
+    function safeSub(uint a, uint b) public pure returns (uint c) {
+        require(b <= a);
+        c = a - b;
+    }
+ 
+    function safeMul(uint a, uint b) public pure returns (uint c) {
+        c = a * b;
+        require(a == 0 || c / a == b);
+    }
+ 
+    function safeDiv(uint a, uint b) public pure returns (uint c) {
+        require(b > 0);
+        c = a / b;
+    }
+}
+ 
+ 
+//Actual token contract
+ 
+contract JGLToken is SafeMath {
+    string public symbol;
+    string public  name;
+    uint8 public decimals;
+    uint256 public _totalSupply;
+    enum attributes
+        { 
+        Strength,
+        Speed,
+        Wisdom,
+        Dexterity,
+        Intelligence
+        }  
 
-// This is the main building block for smart contracts.
-contract Token {
-    // Some string type variables to identify the token.
-    string public name = "My Hardhat Token";
-    string public symbol = "MHT";
+    attributes public attribute;
+    uint256 value;
 
-    // The fixed amount of tokens stored in an unsigned integer type variable.
-    uint256 public totalSupply = 1000000;
 
-    // An address type variable is used to store ethereum accounts.
-    address public owner;
-
-    // A mapping is a key/value map. Here we store each account balance.
-    mapping(address => uint256) balances;
-
-    /**
-     * Contract initialization.
-     *
-     * The `constructor` is executed only once when the contract is created.
-     * The `public` modifier makes a function callable from outside the contract.
-     */
+    event Transfer(address indexed from, address indexed to, uint tokens);
+    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+ 
+    mapping(address => uint) balances;
+    mapping(address => mapping(address => uint)) allowed;
+ 
     constructor() {
-        // The totalSupply is assigned to transaction sender, which is the account
-        // that is deploying the contract.
-        balances[msg.sender] = totalSupply;
-        owner = msg.sender;
+        symbol = "JGL";
+        name = "Jungle Coin";
+        decimals = 2;
+        _totalSupply = 100000;
+        balances[msg.sender] = _totalSupply;
+        emit Transfer(address(0), msg.sender, _totalSupply);
+        attribute = attributes(random() % 5);
+        value = random() % 10;
     }
 
-    /**
-     * A function to transfer tokens.
-     *
-     * The `external` modifier makes a function *only* callable from outside
-     * the contract.
-     */
-    function transfer(address to, uint256 amount) external {
-        // Check if the transaction sender has enough tokens.
-        // If `require`'s first argument evaluates to `false` then the
-        // transaction will revert.
-        require(balances[msg.sender] >= amount, "Not enough tokens");
-
-        // We can print messages and values using console.log
-        console.log(
-            "Transferring from %s to %s %s tokens",
-            msg.sender,
-            to,
-            amount
-        );
-
-        // Transfer the amount.
-        balances[msg.sender] -= amount;
-        balances[to] += amount;
+    function random() private view returns (uint) {
+        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp)));
     }
 
-    /**
-     * Read only function to retrieve the token balance of a given account.
-     *
-     * The `view` modifier indicates that it doesn't modify the contract's
-     * state, which allows us to call it without executing a transaction.
-     */
-    function balanceOf(address account) external view returns (uint256) {
-        return balances[account];
+    function getAttribute() public view returns (attributes) {
+        return attribute;
     }
+
+    function getValue() public view returns (uint) {
+        return value;
+    }
+
+ 
+    function totalSupply() public view returns (uint256) {
+        return _totalSupply  - balances[address(0)];
+    }
+ 
+    function balanceOf(address tokenOwner) public view returns (uint balance) {
+        return balances[tokenOwner];
+    }
+ 
+    function transfer(address to, uint tokens) public returns (bool success) {
+        require(tokens <= balances[msg.sender]);
+        balances[msg.sender] = safeSub(balances[msg.sender], tokens);
+        balances[to] = safeAdd(balances[to], tokens);
+        emit Transfer(msg.sender, to, tokens);
+        return true;
+    }
+ 
+    function approve(address spender, uint tokens) public returns (bool success) {
+        allowed[msg.sender][spender] = tokens;
+        emit Approval(msg.sender, spender, tokens);
+        return true;
+    }
+ 
+    function transferFrom(address from, address to, uint tokens) public returns (bool success) {
+        require(tokens <= balances[from]);
+        require(tokens <= allowed[from][msg.sender]);
+        balances[from] = safeSub(balances[from], tokens);
+        allowed[from][msg.sender] = safeSub(allowed[from][msg.sender], tokens);
+        balances[to] = safeAdd(balances[to], tokens);
+        emit Transfer(from, to, tokens);
+        return true;
+    }
+ 
+    function allowance(address tokenOwner, address spender) public view returns (uint remaining) {
+        return allowed[tokenOwner][spender];
+    }
+ 
+
 }
