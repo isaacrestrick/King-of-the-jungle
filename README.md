@@ -2,4 +2,4 @@
 
 ## Lions... versus the Jungle
 
-Ethereum DApp game, based on Hardhat Hackathon Boilerplate: https://github.com/NomicFoundation/hardhat-hackathon-boilerplate
+Ethereum DApp game, setup initialized from Hardhat Hackathon Boilerplate: https://github.com/NomicFoundation/hardhat-hackathon-boilerplate
