@@ -11,7 +11,7 @@ const ROPSTEN_PRIVATE_KEY = "0xb22bfb66a4cdd62d058cff514256a5c797e9d17410170e664
 
 // If you are using MetaMask, be sure to change the chainId to 1337
 module.exports = {
-  solidity: "0.7.3",
+  solidity: "0.8.1",
   networks: {
     ropsten: {
       url: `https://eth-ropsten.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
