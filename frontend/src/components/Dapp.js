@@ -20,9 +20,6 @@ import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
 import { NoTokensMessage } from "./NoTokensMessage";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
-
-
-
 /*import character1 from './img/1.png';
 import character2 from './img/2.png';
 import character3 from './img/3.png';
@@ -37,6 +34,46 @@ const ROPSTEN_NETWORK_ID = '3';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+
+function Stats(props) {
+  <ListGroup>
+    <ListGroup.Item>health
+      <Badge bg="primary" pill>
+        props.health
+      </Badge>
+    </ListGroup.Item>
+
+    <ListGroup.Item>strength
+      <Badge bg="primary" pill>
+        props.strength
+      </Badge>
+    </ListGroup.Item>
+
+    <ListGroup.Item>dexterity
+      <Badge bg="primary" pill>
+        props.dexterity
+      </Badge>
+    </ListGroup.Item>
+
+    <ListGroup.Item>intelligence
+      <Badge bg="primary" pill>
+      props.intelligence
+      </Badge>
+    </ListGroup.Item>
+
+    <ListGroup.Item>wisdom
+      <Badge bg="primary" pill>
+      props.wisdom
+      </Badge>
+    </ListGroup.Item>
+
+    <ListGroup.Item>speed
+      <Badge bg="primary" pill>
+      props.speed
+      </Badge>
+    </ListGroup.Item>
+  </ListGroup>
+}
 
 
 //Render Lion
