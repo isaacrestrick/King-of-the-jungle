@@ -18,6 +18,11 @@ import { Transfer } from "./Transfer";
 import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
 import { NoTokensMessage } from "./NoTokensMessage";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Button from 'react-bootstrap/Button';
+
+
+
 /*import character1 from './img/1.png';
 import character2 from './img/2.png';
 import character3 from './img/3.png';
@@ -106,6 +111,7 @@ export class Dapp extends React.Component {
 
     // If everything is loaded, we render the application.
     return (<div>
+      <Button variant="primary">Primary</Button>{' '}
       <div className="container p-4">
         <div className="row">
           <div className="col-12">
