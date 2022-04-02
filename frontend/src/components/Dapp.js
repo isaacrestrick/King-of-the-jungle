@@ -18,6 +18,10 @@ import { Transfer } from "./Transfer";
 import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
 import { NoTokensMessage } from "./NoTokensMessage";
+import character1 from './img/1.png';
+import character2 from './img/2.png';
+import character3 from './img/3.png';
+import character4 from './img/4.png';
 
 // This is the Hardhat Network id, you might change it in the hardhat.config.js.
 // If you are using MetaMask, be sure to change the Network id to 1337.
@@ -94,9 +98,9 @@ export class Dapp extends React.Component {
       <div className="container p-4">
         <div className="row">
           <div className="col-12">
-            <h1>
+            {/* <h1>
               {this.state.tokenData.name} ({this.state.tokenData.symbol})
-            </h1>
+            </h1> */}
             <p>
               Welcome <b>{this.state.selectedAddress}</b>, you have{" "}
               <b>
@@ -104,11 +108,13 @@ export class Dapp extends React.Component {
               </b>
               .
             </p>
+            <button class="btn btn-dark">Upgrade Character</button>
           </div>
         </div>
 
         <hr />
 
+        
         <div className="row">
           <div className="col-12">
             {/* 
@@ -133,33 +139,74 @@ export class Dapp extends React.Component {
           </div>
         </div>
 
-        <div className="row">
-          <div className="col-12">
-            {/*
-              If the user has no tokens, we don't show the Transfer form
-            */}
-            {this.state.balance.eq(0) && (
-              <NoTokensMessage selectedAddress={this.state.selectedAddress} />
-            )}
-
-            {/*
-              This component displays a form that the user can use to send a 
-              transaction and transfer some tokens.
-              The component doesn't have logic, it just calls the transferTokens
-              callback.
-            */}
-            {this.state.balance.gt(0) && (
-              <Transfer
-                transferTokens={(to, amount) =>
-                  this._transferTokens(to, amount)
-                }
-                tokenSymbol={this.state.tokenData.symbol}
-              />
-            )}
+        <div class="row">
+          <div class="col-md-12">
+            <h3>Non Boss Characters </h3>
           </div>
         </div>
+
+        <div className="row">
+         
+          <div className="col-3">
+            <img src = {character1} class = "img-responsive" width = "100%" ></img>
+          </div>
+          <div className="col-3">
+            <img src = {character2} class = "img-responsive" width = "100%" ></img>
+          </div>
+          <div className="col-3">
+            <img src = {character3} class = "img-responsive" width = "100%" ></img>
+          </div>
+          <div className="col-3">
+            <img src = {character4} class = "img-responsive" width = "100%" ></img>
+          </div>
+        
+        </div>
+
+        <div className="row">
+         
+          <div className="col-3">
+            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
+            </div>
+            <div className="col-3">
+            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
+            </div>
+            <div className="col-3">
+            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
+            </div>
+            <div className="col-3">
+            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
+            </div>
+         
+        
       </div>
+
+      <div class="modal fade" id="StatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+      
     );
+
+ 
+
   }
 
   componentWillUnmount() {
