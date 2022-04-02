@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // We'll use ethers to interact with the Ethereum network and our contract
 import { ethers } from "ethers";
@@ -19,7 +19,10 @@ import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
 import { NoTokensMessage } from "./NoTokensMessage";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
+import {Button,ListGroup,Card,CardGroup,Badge,Navbar,Container} from 'react-bootstrap';
+
+
+
 /*import character1 from './img/1.png';
 import character2 from './img/2.png';
 import character3 from './img/3.png';
@@ -35,54 +38,121 @@ const ROPSTEN_NETWORK_ID = '3';
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
-function Stats(props) {
-  <ListGroup>
-    <ListGroup.Item>health
+class Stats {
+  constructor(health,strength,dexterity,intelligence,wisdom,speed) {
+    this.health = health;
+    this.strength = strength;
+    this.dexterity = dexterity;
+    this.intelligence = intelligence;
+    this.wisdom = wisdom;
+    this.speed = speed;
+  }
+}
+
+class Animal {
+  constructor(name, description,sprite, stats) {
+    this.name = name;
+    //add type of animal
+    this.description = description;
+    this.sprite = sprite;
+    this.stats = stats;
+  }
+}
+
+const simbaStats = new Stats(100,100,0,-100,100,100);
+const simba = new Animal("Simba", "A proud lion. Is prepaaaaaared.", "img/1.png", simbaStats);
+
+
+const mufasaStats = new Stats(100000,1000000,-100,10000,10000000000,-10000000);
+const mufasa = new Animal("Mufasa", "Wise lion took massive L against more ambitious sibling", "img/2.png", mufasaStats);
+
+//const lionsTest = [simba]
+
+const lions = [simba,mufasa,simba,mufasa];
+
+//const [lions, setLions] = useState(lionsTest);
+
+function StatsList(props) {
+  const stats = props.stats;
+  return(
+  <ListGroup variant="flush">
+    <ListGroup.Item>health 
       <Badge bg="primary" pill>
-        props.health
+      {stats.health}
       </Badge>
     </ListGroup.Item>
 
-    <ListGroup.Item>strength
+    <ListGroup.Item>strength 
       <Badge bg="primary" pill>
-        props.strength
+      {stats.strength}
       </Badge>
     </ListGroup.Item>
 
-    <ListGroup.Item>dexterity
+    <ListGroup.Item>dexterity 
       <Badge bg="primary" pill>
-        props.dexterity
+      {stats.dexterity}
       </Badge>
     </ListGroup.Item>
 
-    <ListGroup.Item>intelligence
+    <ListGroup.Item>intelligence 
       <Badge bg="primary" pill>
-      props.intelligence
+      {stats.intelligence}
       </Badge>
     </ListGroup.Item>
 
-    <ListGroup.Item>wisdom
+    <ListGroup.Item>wisdom 
       <Badge bg="primary" pill>
-      props.wisdom
+      {stats.wisdom}
       </Badge>
     </ListGroup.Item>
 
-    <ListGroup.Item>speed
+    <ListGroup.Item>speed 
       <Badge bg="primary" pill>
-      props.speed
+      {stats.speed}
       </Badge>
     </ListGroup.Item>
   </ListGroup>
+  );
 }
 
+function AnimalCard(props) {
+  const animal = props.animal;
+  const description = props.description;
+  const [showStats,setShowStats] = useState(false);
 
-//Render Lion
-function Lion(props) {
   return(
     <div className="col-3">
-      <img src = {props.sprite} class = "img-responsive" width = "100%" alt="Lionless"></img>
+      <Card style={{ width: '18rem' }}>
+          <Card.Img variant="top" src={animal.sprite} />
+          <Card.Body>
+            <Card.Title>{animal.name}</Card.Title>
+            <Card.Text>{animal.description}</Card.Text>
+            <Button variant="primary" onClick={() => {setShowStats(!showStats)}}>Show stats</Button>
+            {showStats && <StatsList stats={animal.stats}/>}
+          </Card.Body>
+      </Card>
     </div>
-  ) 
+  )
+}
+
+function AnimalGroup(props) {
+  const animals = props.animals;
+  const title = props.title;
+  return (<>
+  <Navbar bg="light">
+    <Container>
+    <Navbar.Text>
+        {title}
+      </Navbar.Text>
+    </Container>
+  </Navbar>
+    <CardGroup>
+      {animals.map((animal,i) => (
+        <AnimalCard animal = {animal} key={i}/>
+      ))}
+    </CardGroup>
+    </>
+  )
 }
 
 // This component is in charge of doing these things:
@@ -147,8 +217,7 @@ export class Dapp extends React.Component {
     }
 
     // If everything is loaded, we render the application.
-    return (<div>
-      <Button variant="primary">Primary</Button>{' '}
+    return (
       <div className="container p-4">
         <div className="row">
           <div className="col-12">
@@ -162,7 +231,6 @@ export class Dapp extends React.Component {
               </b>
               .
             </p>
-            <button class="btn btn-dark">Upgrade Character</button>
           </div>
         </div>
 
@@ -194,61 +262,15 @@ export class Dapp extends React.Component {
         </div>
 
         <div class="row">
-          <div class="col-md-12">
-            <h3>Non Boss Characters </h3>
-          </div>
         </div>
 
         <div className="row">
          
-          <Lion sprite='img/1.png'/>
-          <Lion sprite='img/2.png'/>
-          <Lion sprite='img/3.png'/>
-          <Lion sprite='img/4.png'/>
+        <AnimalGroup animals={lions} title = "Lion Collection:"/>
         
         </div>
-
-        <div className="row">
-         
-          <div className="col-3">
-            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
-            </div>
-            <div className="col-3">
-            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
-            </div>
-            <div className="col-3">
-            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
-            </div>
-            <div className="col-3">
-            <center><button class='btn btn-dark' data-toggle="modal" data-target="#StatModal">Show Stats</button></center>
-            </div>
-         
-        
-      </div>
-
-      <div class="modal fade" id="StatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
   </div>
-</div>
-        
-      </div>
-      
-      </div>);
+);
 
  
 
