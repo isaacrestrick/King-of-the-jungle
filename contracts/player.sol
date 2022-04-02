@@ -5,42 +5,43 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
-
-
-contract player is ERC721,Ownable
-{
-    struct stats
-    {
-        uint speed;
-        uint strength;
-        uint wisdom;
-        uint dexterity;
-        uint intelligence;
+contract player is ERC721, Ownable {
+    struct stats {
+        uint256 health;
+        uint256 strength;
+        uint256 dexterity;
+        uint256 intelligence;
+        uint256 wisdom;
+        uint256 speed;
     }
 
-    using Counters for Counters.Counter;  
+    using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIds;
-    mapping (uint256 => stats) public IdtoStats;
-    mapping (uint256 => string) public IdtoNames;
+    mapping(uint256 => stats) public IdtoStats;
+    mapping(uint256 => string) public IdtoNames;
 
     constructor() ERC721("PlayerNFT", "PLO") {}
-    function random() private view returns (uint) {
-        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp)))%5;
+
+    function random() private view returns (uint256) {
+        return
+            uint256(
+                keccak256(abi.encodePacked(block.difficulty, block.timestamp))
+            ) % 5;
     }
-    function genPlayer(address receiver, string memory tokenURI,string memory _name) external onlyOwner returns (uint256) {
 
-
+    function genPlayer(
+        address receiver,
+        string memory tokenURI,
+        string memory _name
+    ) external onlyOwner returns (uint256) {
         _tokenIds.increment();
         uint256 newNftTokenId = _tokenIds.current();
-        IdtoNames[newNftTokenId]=_name;
-  
+        IdtoNames[newNftTokenId] = _name;
+
         _mint(receiver, newNftTokenId);
         _setTokenURI(newNftTokenId, tokenURI);
 
         return newNftTokenId;
     }
-
-
 }
