@@ -50,25 +50,41 @@ class Stats {
 }
 
 class Animal {
-  constructor(name, description,sprite, stats) {
+  constructor(name, description,sprite, stats, species) {
     this.name = name;
     //add type of animal
     this.description = description;
     this.sprite = sprite;
     this.stats = stats;
+    this.species = species;
   }
 }
 
+
+//lions
+
 const simbaStats = new Stats(100,100,0,-100,100,100);
-const simba = new Animal("Simba", "A proud lion. Is prepaaaaaared.", "img/1.png", simbaStats);
+const simba = new Animal("Simba", "A proud lion. Is prepaaaaaared.", "img/1.png", simbaStats,'lion');
 
 
 const mufasaStats = new Stats(100000,1000000,-100,10000,10000000000,-10000000);
-const mufasa = new Animal("Mufasa", "Wise lion took massive L against more ambitious sibling", "img/2.png", mufasaStats);
+const mufasa = new Animal("Mufasa", "Wise lion took massive L against more ambitious sibling", "img/2.png", mufasaStats,'lion');
 
-//const lionsTest = [simba]
+const scarStats = new Stats(100000,1000000,100,10000,0,10000000);
+const scar = new Animal("Scar", "Was prepared", "img/3.png", scarStats,'lion');
 
-const lions = [simba,mufasa,simba,mufasa];
+const lions = [simba,mufasa,scar];
+
+//plebs
+
+const harryPotterOwlStats = new Stats(100,100,0,-100,100,100);
+const harryPotterOwl = new Animal("harry potter owl", "owl owl owl", "img/1.png", harryPotterOwlStats,'lion');
+
+
+const satanStats = new Stats(100000,1000000,-100,10000,10000000000,-10000000);
+const satan = new Animal("Satan", "devil", "img/2.png", satanStats,'lion');
+
+const plebs = [harryPotterOwl,satan];
 
 //const [lions, setLions] = useState(lionsTest);
 
@@ -126,6 +142,7 @@ function AnimalCard(props) {
           <Card.Img variant="top" src={animal.sprite} />
           <Card.Body>
             <Card.Title>{animal.name}</Card.Title>
+            <Card.Text>{animal.name} is a <b>{animal.species}</b></Card.Text>
             <Card.Text>{animal.description}</Card.Text>
             <Button variant="primary" onClick={() => {setShowStats(!showStats)}}>Show stats</Button>
             {showStats && <StatsList stats={animal.stats}/>}
@@ -269,6 +286,12 @@ export class Dapp extends React.Component {
         <AnimalGroup animals={lions} title = "Lion Collection:"/>
         
         </div>
+
+        <div className="row">
+         
+         <AnimalGroup animals={plebs} title = "Pleb (Non-Lion) Collection:"/>
+         
+         </div>
   </div>
 );
 
