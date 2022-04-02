@@ -18,19 +18,30 @@ import { Transfer } from "./Transfer";
 import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
 import { NoTokensMessage } from "./NoTokensMessage";
-import character1 from './img/1.png';
+/*import character1 from './img/1.png';
 import character2 from './img/2.png';
 import character3 from './img/3.png';
-import character4 from './img/4.png';
+import character4 from './img/4.png';*/
 
 // This is the Hardhat Network id, you might change it in the hardhat.config.js.
 // If you are using MetaMask, be sure to change the Network id to 1337.
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
 // to use when deploying to other networks.
-const HARDHAT_NETWORK_ID = '31337';
+const HARDHAT_NETWORK_ID = '1337';
+const ROPSTEN_NETWORK_ID = '3';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+
+
+//Render Lion
+function Lion(props) {
+  return(
+    <div className="col-3">
+      <img src = {props.sprite} class = "img-responsive" width = "100%" alt="Lionless"></img>
+    </div>
+  ) 
+}
 
 // This component is in charge of doing these things:
 //   1. It connects to the user's wallet
@@ -94,7 +105,7 @@ export class Dapp extends React.Component {
     }
 
     // If everything is loaded, we render the application.
-    return (
+    return (<div>
       <div className="container p-4">
         <div className="row">
           <div className="col-12">
@@ -147,18 +158,10 @@ export class Dapp extends React.Component {
 
         <div className="row">
          
-          <div className="col-3">
-            <img src = {character1} class = "img-responsive" width = "100%" ></img>
-          </div>
-          <div className="col-3">
-            <img src = {character2} class = "img-responsive" width = "100%" ></img>
-          </div>
-          <div className="col-3">
-            <img src = {character3} class = "img-responsive" width = "100%" ></img>
-          </div>
-          <div className="col-3">
-            <img src = {character4} class = "img-responsive" width = "100%" ></img>
-          </div>
+          <Lion sprite='img/1.png'/>
+          <Lion sprite='img/2.png'/>
+          <Lion sprite='img/3.png'/>
+          <Lion sprite='img/4.png'/>
         
         </div>
 
@@ -202,8 +205,7 @@ export class Dapp extends React.Component {
         
       </div>
       
-      
-    );
+      </div>);
 
  
 
@@ -402,9 +404,9 @@ export class Dapp extends React.Component {
     this.setState(this.initialState);
   }
 
-  // This method checks if Metamask selected network is Localhost:8545 
+  // This method checks if Metamask selected network is Ropsten
   _checkNetwork() {
-    if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
+    if (window.ethereum.networkVersion === ROPSTEN_NETWORK_ID) {
       return true;
     }
 
