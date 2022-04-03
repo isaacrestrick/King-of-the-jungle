@@ -1,5 +1,7 @@
 import React from "react";
 
+//and this
+
 export function WaitingForTransactionMessage({ txHash }) {
   return (
     <div className="alert alert-info" role="alert">
