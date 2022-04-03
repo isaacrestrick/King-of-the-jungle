@@ -71,3 +71,8 @@ contract Token {
         return balances[account];
     }
 }
+
+/*async _updateBalance() {
+  const balance = await this._token.balanceOf(this.state.selectedAddress);
+  this.setState({ balance });
+}*/

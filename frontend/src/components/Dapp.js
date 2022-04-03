@@ -6,7 +6,10 @@ import { ethers } from "ethers";
 // We import the contract's artifacts and address here, as we are going to be
 // using them with ethers
 import TokenArtifact from "../contracts/Token.json";
-import contractAddress from "../contracts/contract-address.json";
+import JungleTokenArtifact from "../contracts/JungleToken.json";
+
+import tokenContractAddress from "../contracts/token-contract-address.json";
+import jungleTokenContractAddress from "../contracts/jungletoken-contract-address.json";
 
 // All the logic of this dapp is contained in the Dapp component.
 // These other components are just presentational ones: they don't have any
@@ -23,16 +26,17 @@ import {Button,ListGroup,Card,CardGroup,Badge,Navbar,Container} from 'react-boot
 
 
 
-/*import character1 from './img/1.png';
-import character2 from './img/2.png';
-import character3 from './img/3.png';
-import character4 from './img/4.png';*/
+/*async _updateBalance() {
+  const balance = await this._token.balanceOf(this.state.selectedAddress);
+  this.setState({ balance });
+}*/
+
+
 
 // This is the Hardhat Network id, you might change it in the hardhat.config.js.
 // If you are using MetaMask, be sure to change the Network id to 1337.
 // Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
 // to use when deploying to other networks.
-const HARDHAT_NETWORK_ID = '1337';
 const ROPSTEN_NETWORK_ID = '3';
 
 // This is an error code that indicates that the user canceled a transaction
@@ -368,8 +372,14 @@ export class Dapp extends React.Component {
     // Then, we initialize the contract using that provider and the token's
     // artifact. You can do this same thing with your contracts.
     this._token = new ethers.Contract(
-      contractAddress.Token,
+      tokenContractAddress.Token,
       TokenArtifact.abi,
+      this._provider.getSigner(0)
+    );
+
+    this._jungletoken = new ethers.Contract(
+      jungleTokenContractAddress.JungleToken,
+      JungleTokenArtifact.abi,
       this._provider.getSigner(0)
     );
   }
