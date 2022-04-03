@@ -19,14 +19,15 @@ import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";
 import { NoTokensMessage } from "./NoTokensMessage";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button,ListGroup,Card,CardGroup,Badge,Navbar,Container} from 'react-bootstrap';
+import {Button,ListGroup,Card,CardGroup,Badge,Navbar,Container, ButtonGroup} from 'react-bootstrap';
 
 
-
-/*import character1 from './img/1.png';
+/*
+import character1 from './img/1.png';
 import character2 from './img/2.png';
 import character3 from './img/3.png';
-import character4 from './img/4.png';*/
+import character4 from './img/4.png';
+*/
 
 // This is the Hardhat Network id, you might change it in the hardhat.config.js.
 // If you are using MetaMask, be sure to change the Network id to 1337.
@@ -38,16 +39,6 @@ const ROPSTEN_NETWORK_ID = '3';
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
-class Stats {
-  constructor(health,strength,dexterity,intelligence,wisdom,speed) {
-    this.health = health;
-    this.strength = strength;
-    this.dexterity = dexterity;
-    this.intelligence = intelligence;
-    this.wisdom = wisdom;
-    this.speed = speed;
-  }
-}
 
 class Animal {
   constructor(name, description,sprite, stats, species) {
@@ -63,28 +54,45 @@ class Animal {
 
 //lions
 
-const simbaStats = new Stats(100,100,0,-100,100,100);
-const simba = new Animal("Simba", "A proud lion. Is prepaaaaaared.", "img/1.png", simbaStats,'lion');
+const simba = new Animal("Simba", "A proud lion. Is prepaaaaaared.", "image0.png", 100,'lion');
 
 
-const mufasaStats = new Stats(100000,1000000,-100,10000,10000000000,-10000000);
-const mufasa = new Animal("Mufasa", "Wise lion took massive L against more ambitious sibling", "img/2.png", mufasaStats,'lion');
+const mufasa = new Animal("Mufasa", "Wise lion took massive L against more ambitious sibling", "bluelion.png", 200,'lion');
 
-const scarStats = new Stats(100000,1000000,100,10000,0,10000000);
-const scar = new Animal("Scar", "Was prepared", "img/3.png", scarStats,'lion');
+const scar = new Animal("Scar", "Was prepared", "greenlion.png", 220,'lion');
 
 const lions = [simba,mufasa,scar];
 
 //plebs
 
-const harryPotterOwlStats = new Stats(100,100,0,-100,100,100);
-const harryPotterOwl = new Animal("harry potter owl", "owl owl owl", "img/1.png", harryPotterOwlStats,'lion');
+const sergio = new Animal("Sergio", "owl owl owl", "image2.png", 600009,'owl');
 
 
-const satanStats = new Stats(100000,1000000,-100,10000,10000000000,-10000000);
-const satan = new Animal("Satan", "devil", "img/2.png", satanStats,'lion');
+const jacobo = new Animal("Jacobo", "non-sinful and dexterous", "image5.png", 1,'snake');
 
-const plebs = [harryPotterOwl,satan];
+const minho = new Animal("Minho", "intelligent but no street smart", "image3.png", 5,'dolphin');
+
+const harold = new Animal("Harold", "stank", "image5.png", 90,'pig');
+const oscar = new Animal("Oscar", "ghastly", "image4.png", 1,'ghoul');
+
+
+const plebs = [sergio, jacobo, minho, harold, oscar];
+
+var Selected = [];
+var lionSelected = [];
+var plebSelected = [];
+var proceeding = false;
+var trading = false;
+var jungleToggle = false;
+var allAnimals = [];
+var market = [harold, minho, jacobo, oscar];
+
+for(var i = 0; i < plebs.length; i++) {
+  allAnimals.push(plebs[i]);
+}
+for(var i = 0; i < lions.length; i++) {
+  allAnimals.push(lions[i]);
+}
 
 //const [lions, setLions] = useState(lionsTest);
 
@@ -92,50 +100,64 @@ function StatsList(props) {
   const stats = props.stats;
   return(
   <ListGroup variant="flush">
-    <ListGroup.Item>health 
+    <ListGroup.Item>Power
       <Badge bg="primary" pill>
-      {stats.health}
+      {stats}
       </Badge>
     </ListGroup.Item>
-
-    <ListGroup.Item>strength 
-      <Badge bg="primary" pill>
-      {stats.strength}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>dexterity 
-      <Badge bg="primary" pill>
-      {stats.dexterity}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>intelligence 
-      <Badge bg="primary" pill>
-      {stats.intelligence}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>wisdom 
-      <Badge bg="primary" pill>
-      {stats.wisdom}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>speed 
-      <Badge bg="primary" pill>
-      {stats.speed}
-      </Badge>
-    </ListGroup.Item>
-  </ListGroup>
+    </ListGroup>
+   
   );
 }
 
+function addPlayers(animal) {
+  Selected.push(animal)
+  if (animal.species =='lion') { 
+  lions.splice(lions.indexOf(animal, 0),1)
+  } else {
+    plebs.splice(plebs.indexOf(animal, 0),1)
+  }
+/*
+  if (animal.species == "lion") {
+    console.log("adding lion");
+
+    Selected = [];
+    Selected.push(animal)
+    lionSelected = true;
+  } else {
+    lionSelected = false;
+    if(Selected.length == 0) {
+      console.log("adding length 0");
+      Selected.push(animal)
+      return true;
+
+    } else if(Selected[0].species == "lion") {
+      console.log("adding w lion in list");
+
+      Selected = [];
+
+      Selected.push(animal)
+    } else if(Selected.length >= 3) {
+      console.log("adding overfilled");
+
+      Selected.pop();
+      Selected.push(animal);
+    } else {
+      console.log("adding");
+      Selected.push(animal);
+    }
+  }
+  */
+}
+
 function AnimalCard(props) {
+  const [disable, setDisable] = React.useState(false);
   const animal = props.animal;
   const description = props.description;
   const [showStats,setShowStats] = useState(false);
+  var showCard = true;
 
+  if (showCard) {
   return(
     <div className="col-3">
       <Card style={{ width: '18rem' }}>
@@ -146,10 +168,88 @@ function AnimalCard(props) {
             <Card.Text>{animal.description}</Card.Text>
             <Button variant="primary" onClick={() => {setShowStats(!showStats)}}>Show stats</Button>
             {showStats && <StatsList stats={animal.stats}/>}
+            <Button variant = "primary" onClick={() => { addPlayers(animal); showCard = false; console.log(Selected)}}>Send to Jungle</Button>
+
           </Card.Body>
       </Card>
     </div>
-  )
+  );
+  } else {
+    return(<div></div>);
+  }
+}
+
+function MarketCard(props) {
+  const animal = props.animal;
+  const [showStats,setShowStats] = useState(false);
+  var showCard = true;
+
+  if (showCard) {
+  return(
+    <div className="col-3">
+      <Card style={{ width: '18rem' }}>
+          <Card.Img variant="top" src={animal.sprite} />
+          <Card.Body>
+            <Card.Title>{animal.name}</Card.Title>
+            <Card.Text>{animal.name} is a <b>{animal.species}</b></Card.Text>
+            <Button variant="primary" onClick={() => {setShowStats(!showStats)}}>Show stats</Button>
+            {showStats && <StatsList stats={animal.stats}/>}
+          </Card.Body>
+      </Card>
+    </div>
+  );
+  } else {
+    return(<div></div>);
+  }
+}
+
+
+function TradeCard(props) {
+  
+  const [showStats,setShowStats] = useState(false);
+  const animal = props.animal;
+  var showCard = true;
+
+  if (showCard) {
+  return(
+    <div className="col-3">
+      <Card style={{ width: '18rem' }}>
+          <Card.Img variant="top" src={animal.sprite} />
+          <Card.Body>
+            <Card.Title>{animal.name}</Card.Title>
+            <Card.Text>{animal.name} is a <b>{animal.species}</b></Card.Text>
+            <Card.Text>{animal.description}</Card.Text>
+            <Button variant="primary" onClick={() => {setShowStats(!showStats)}}>Show stats</Button>
+            {showStats && <StatsList stats={animal.stats}/>}
+            <ButtonGroup>trade for {market.map((animal,i) => (
+        <Button>{animal.name}</Button>
+      ))}</ButtonGroup>
+
+          </Card.Body>
+      </Card>
+    </div>
+  );
+  } else {
+    return(<div></div>);
+  }
+}
+
+function SelectedCard(props) {
+  const [disable, setDisable] = React.useState(false);
+  const animal = props.animal;
+
+  return(
+    <div className="col-3">
+      <Card style={{ width: '18rem' }}>
+          <Card.Img variant="top" src={animal.sprite} />
+          <Card.Body>
+            <Card.Title>{animal.name}</Card.Title>
+            <Button variant="primary" onClick={() => {Selected.splice(Selected.indexOf(animal), 1)}}>Remove</Button>
+
+          </Card.Body>
+      </Card>
+    </div>
+  );
 }
 
 function AnimalGroup(props) {
@@ -169,7 +269,109 @@ function AnimalGroup(props) {
       ))}
     </CardGroup>
     </>
+  );
+}
+
+function MarketGroup(props) {
+  const animals = props.animals;
+  const title = props.title;
+  return (<>
+  <Navbar bg="light">
+    <Container>
+    <Navbar.Text>
+        {title}
+      </Navbar.Text>
+    </Container>
+  </Navbar>
+    <CardGroup>
+      {animals.map((animal,i) => (
+        <MarketCard animal = {animal} key={i}/>
+      ))}
+    </CardGroup>
+    </>
+  );
+}
+
+function SelectedGroup(props) {
+  const animals = props.animals;
+  const title = props.title;
+  return (<>
+  <Navbar bg="light">
+    <Container>
+    <Navbar.Text>
+        {title}
+      </Navbar.Text>
+    </Container>
+  </Navbar>
+    <CardGroup>
+      {animals.map((animal,i) => (
+        <SelectedCard animal = {animal} key={i}/>
+      ))}
+    </CardGroup>
+    </>
   )
+}
+
+function TradeGroup(props) {
+  const animals = props.animals;
+  const title = props.title;
+  return (<>
+  <Navbar bg="light">
+    <Container>
+    <Navbar.Text>
+        {title}
+      </Navbar.Text>
+    </Container>
+  </Navbar>
+    <CardGroup>
+      {animals.map((animal,i) => (
+        <TradeCard animal = {animal} key={i}/>
+      ))}
+    </CardGroup>
+    </>
+  )
+}
+
+function ProceedButton() {
+  var enabled;
+  if (Selected.length > 0 && (Selected[0].species == "lion" || Selected.length >= 3)) {
+    enabled = true;
+  } else {
+    enabled = false;
+  }
+  return <Button disabled  = {!enabled} onClick={() => {proceeding = true; for(var i = 0; i < Selected.length; i++) {
+      if (Selected[i].species == 'lion') {console.log(Selected[i]); lionSelected.push(Selected[i])} else {console.log(Selected[i]);plebSelected.push(Selected[i])}
+  }}}>Enter the Jungle!</Button>
+  
+}
+
+function TradeButton() {
+  return <Button onClick={() => {trading = true}}>Enter Trade Market</Button>
+}
+
+function CalculateBattle() {
+  setTimeout(() => {  console.log("World!"); }, 2000);
+  var plebScore = 0;
+  for (var i = 0; i < plebs.length; i++) {
+    plebScore += plebs[i].stats;
+  }
+  if (plebScore > lions[0].stats) {
+    return <Card style={{ width: '18rem' }}>
+    <Card.Img variant="top" src={"image7.png"} />
+    <Card.Body>
+      <Card.Title>Plebs Win!</Card.Title>
+      <Card.Text>Pleb teams each receive 3 JGL Coin</Card.Text>
+    </Card.Body>
+</Card>
+  } else {
+    return <Card style={{ width: '18rem' }}>
+    <Card.Img variant="top" src={"image7.png"} />
+    <Card.Body>
+      <Card.Title>King Wins!</Card.Title>
+      <Card.Text>King team receives 3 JGL Coin</Card.Text>
+    </Card.Body>
+</Card>
+  }
 }
 
 // This component is in charge of doing these things:
@@ -182,6 +384,9 @@ function AnimalGroup(props) {
 // Note that (3) and (4) are specific of this sample application, but they show
 // you how to keep your Dapp and contract's state in sync,  and how to send a
 // transaction.
+
+var sectionStyle = {backgroundImage: 'url("https://wallpaperaccess.com/full/2081930.jpg")'}
+
 export class Dapp extends React.Component {
   constructor(props) {
     super(props);
@@ -204,6 +409,8 @@ export class Dapp extends React.Component {
   }
 
   render() {
+
+
     // Ethereum wallets inject the window.ethereum object. If it hasn't been
     // injected, we instruct the user to install MetaMask.
     if (window.ethereum === undefined) {
@@ -219,11 +426,17 @@ export class Dapp extends React.Component {
     // clicks a button. This callback just calls the _connectWallet method.
     if (!this.state.selectedAddress) {
       return (
+        <div>
+        <center>
+              <img src = "image7.png" width="700" height="600"></img>
+              </center>
+
         <ConnectWallet 
           connectWallet={() => this._connectWallet()} 
           networkError={this.state.networkError}
           dismiss={() => this._dismissNetworkError()}
         />
+        </div>
       );
     }
 
@@ -233,9 +446,15 @@ export class Dapp extends React.Component {
       return <Loading />;
     }
 
+    if (!proceeding && !trading) {
     // If everything is loaded, we render the application.
     return (
+
       <div className="container p-4">
+        <center>
+              <img src = "image7.png" width="500" height="450"></img>
+              </center>
+
         <div className="row">
           <div className="col-12">
             {/* <h1>
@@ -278,7 +497,7 @@ export class Dapp extends React.Component {
           </div>
         </div>
 
-        <div class="row">
+        <div className="row">
         </div>
 
         <div className="row">
@@ -292,8 +511,46 @@ export class Dapp extends React.Component {
          <AnimalGroup animals={plebs} title = "Pleb (Non-Lion) Collection:"/>
          
          </div>
+
+        
+
+    <ProceedButton/>
+    <TradeButton/>
   </div>
+
+  
+
+  
 );
+            }
+            if (proceeding) {
+              return(
+
+                <div className="row" style = {sectionStyle}>
+                  <h1><center>The Jungle</center></h1>
+
+         <SelectedGroup animals={lionSelected} title = "The King"/>
+         <SelectedGroup animals={plebSelected} title = "The Plebs"/>
+         <Button onClick={() => {/*<CalculateBattle/>*/}}>Battle</Button>
+
+               <Button onClick={() => {proceeding = false}}>Back</Button>
+               </div>
+
+              );
+            }
+            if (trading) {
+              return(
+                <div className="row">
+         
+         <MarketGroup animals={market} title = "The Market"/>
+         <TradeGroup animals={allAnimals} title = "Your Collection"/>
+            <title><center>Battle!</center></title>
+               <Button onClick={() => {trading = false}}>Back</Button>
+               </div>
+
+              );
+            }
+            
 
  
 
