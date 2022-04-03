@@ -13,99 +13,102 @@ import {Button,ListGroup,Card,CardGroup,Badge,Navbar,Container} from 'react-boot
 
 const ROPSTEN_NETWORK_ID = '3';
 
-function StatsList(props) {
-  const stats = props.stats;
-  return(
-  <ListGroup variant="flush">
-    <ListGroup.Item>health 
-      <Badge bg="primary" pill>
-      {stats[0].toNumber()}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>strength 
-      <Badge bg="primary" pill>
-      {stats[1].toNumber()}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>dexterity 
-      <Badge bg="primary" pill>
-      {stats[2].toNumber()}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>intelligence 
-      <Badge bg="primary" pill>
-      {stats[3].toNumber()}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>wisdom 
-      <Badge bg="primary" pill>
-      {stats[4].toNumber()}
-      </Badge>
-    </ListGroup.Item>
-
-    <ListGroup.Item>speed 
-      <Badge bg="primary" pill>
-      {stats[5].toNumber()}
-      </Badge>
-    </ListGroup.Item>
-  </ListGroup>
-  );
-}
-
-function AnimalCard(props) {
-  const animal = props.animal;
-  const description = props.description;
-  const [showStats,setShowStats] = useState(false);
-
-  return(
-    <div className="col-3">
-      <Card style={{ width: '18rem' }}>
-          <Card.Body>
-            <Card.Title>{animal['name']}</Card.Title>
-            <Card.Text>{animal['name']} is a <b>{animal.species}</b></Card.Text>
-            <Card.Text>{animal['description']}</Card.Text>
-            <Button variant="primary" onClick={() => {setShowStats(!showStats)}}>Show stats</Button>
-            {showStats && <StatsList stats={animal['data']}/>}
-          </Card.Body>
-      </Card>
-    </div>
-  )
-}
-
-function AnimalGroup(props) {
-  const animals = props.animals;
-  const title = props.title;
-  return (<>
-  <Navbar bg="light">
-    <Container>
-    <Navbar.Text>
-        {title}
-      </Navbar.Text>
-    </Container>
-  </Navbar>
-    <CardGroup>
-      {animals.map((animal,i) => (
-        <AnimalCard animal = {animal} key={i}/>
-      ))}
-    </CardGroup>
-    </>
-  )
-}
-
 const App = () => {
   // State
   const [walletAddress, setWalletAddress] = useState(null);
-  const [lions, setLions] = useState([]);
-  const [plebs, setPlebs] = useState([]);
+  //const [sellerAddress, setSellerAddress] = useState(null); etc.
+
+  const [animals, setAnimals] = useState([]);
+  const [jungler, setJungler] = useState([0,false]); //could have big number issue.
+  //const [combat, setCombat] = useState(false);
 
 
+function StatsList(props) {
+    const stats = props.stats;
+    return(
+    <ListGroup variant="flush">
+      <ListGroup.Item>total stats of this beastie. Wow! 
+        <Badge bg="primary" pill>
+        {stats}
+        </Badge>
+      </ListGroup.Item>
+    </ListGroup>
+    );
+  }
+  
+  const joinJungle = async (junglerId) => {
+    const provider2 = new ethers.providers.Web3Provider(window.ethereum);
+    const jungletoken2 = new ethers.Contract(
+    jungleTokenContractAddress.JungleToken,
+    JungleTokenArtifact.abi,
+    provider2.getSigner(0)
+    )
+    setJungler([junglerId,true]);
+    await getAnimals();
+  }
+
+  function AnimalCard(props) {
+    const animal = props.animal;
+    const description = "lion or not here I come!";
+    const [showStats,setShowStats] = useState(false);
+    let genetics;
+    if (animal.species === 0) {
+        genetics = 'lion';
+    }
+    if (animal.species === 1) {
+      genetics = 'ape';
+  }
+  if (animal.species === 2) {
+      genetics = 'snake';
+  }
+  if (animal.species === 3) {
+      genetics = 'dolphin';
+  }
+  if (animal.species === 4) {
+      genetics = 'owl';
+  }
+  if (animal.species === 5) {
+      genetics = 'cheetah';
+  }
+    return(
+      <div className="col-3">
+        <Card style={{ width: '18rem' }}>
+            <Card.Body>
+              <Card.Title>{genetics} the {animal.id.toNumber()}th</Card.Title>
+              <Card.Text>{description}</Card.Text>
+              <Button variant="primary" onClick={() => {setShowStats(!showStats)}}>Show stats</Button>
+              {showStats && <StatsList stats={animal.total_stats.toNumber()}/>}
+              {animal.jungle && <Button variant="primary" onClick={()=>{joinJungle(animal.id)}}>"Join Jungle"</Button>}
+              {animal.jungle && <Card.Text>In the jungle..</Card.Text>}
+            </Card.Body>
+        </Card>
+      </div>
+    )
+  }
+
+  function AnimalGroup(props) {
+    const listOfAnimals = props.animals;
+    const title = props.title;
+    return (<>
+    <Navbar bg="light">
+      <Container>
+      <Navbar.Text>
+          {title}
+        </Navbar.Text>
+      </Container>
+    </Navbar>
+      <CardGroup>
+        {listOfAnimals.map((animal,i) => (
+          <AnimalCard animal = {animal} key={i}/>
+        ))}
+      </CardGroup>
+      </>
+    )
+  }
+/********** */
 const connectWallet = async () => {
   const [selectedAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' });
-  if (window.ethereum.networkVersion != ROPSTEN_NETWORK_ID) {
+  if (window.ethereum.networkVersion !== ROPSTEN_NETWORK_ID) {
     return;
   }
   setWalletAddress(selectedAddress);
@@ -114,14 +117,10 @@ const connectWallet = async () => {
         jungleTokenContractAddress.JungleToken,
         JungleTokenArtifact.abi,
         provider2.getSigner(0)
+
   );
-  //const wait_for_lions = await jungletoken2.getAnimals(selectedAddress,true);
-  //setLions(wait_for_lions);
-  //const wait_for_plebs = await jungletoken2.getAnimals(selectedAddress,false);
-  //setLions(wait_for_plebs);
   window.ethereum.on("accountsChanged", ([newAddress]) => {
     if (newAddress === undefined) {
-      //resetState();
       return
     }
     setWalletAddress(selectedAddress);
@@ -138,11 +137,11 @@ const addLion = async () => {
         JungleTokenArtifact.abi,
         provider2.getSigner(0)
     );
-  const newLionId = await jungletoken2.generateAnimal(walletAddress,true); //descrip
-  console.log('new lion id!', newLionId);
-  //const wait_for_lions = await jungletoken2.getAnimals(walletAddress,true);
-  //setLions(wait_for_lions);
-  //console.log('da jungle...',wait_for_lions);
+  const newLionId = await jungletoken2.generateAnimal(walletAddress,5); //source of randomness!
+  const theAnimals = await jungletoken2.getAnimalsAndMore(walletAddress,jungler[0],jungler[1],walletAddress,0);
+            setAnimals(theAnimals);
+
+            await getAnimals();
 
 }
 const addPleb = async () => {
@@ -152,11 +151,10 @@ const addPleb = async () => {
         JungleTokenArtifact.abi,
         provider2.getSigner(0)
     );
-  const newPlebId = await jungletoken2.generateAnimal(walletAddress,false); //descrip
-  console.log('new pleb id!', newPlebId);
-  const wait_for_plebs = await jungletoken2.getAnimals(walletAddress,false);
-  //setPlebs(wait_for_plebs);
-  //console.log('da plebs...',wait_for_plebs);
+  const newPlebId = await jungletoken2.generateAnimal(walletAddress,1); //source of randomness!
+
+  await getAnimals();
+
 }
 //animal will no longer be random.
 const NewLionButton = () => {
@@ -180,21 +178,27 @@ const Unconnected = () => {
     )
   }
 }
-//something is wrong with state for lions and thing... its one behind
-
-//need to make an animal token (and name lol) 
-
-//food
-//extendo 1 / 2
-//display ASAP... and understood, since needed
-//fr combat. hopefully contract too? nah..
-// then can fix the backend a little bit (a little bit), payable
 
 const Connected = () => {
+  let lions = [];
+  let plebs = [];
+  for (let i = 0; i < animals.length; i++) {
+    let animal = animals[i];
+    animal['total_stats'] = animal['total_stats'].toNumber();
+    animal['species'] = animal['species'].toNumber();
+    //animal['id'] = animal['id'].toNumber();
+    //animal['seller_tokenId'] = animal['seller_tokenId'].toNumber();
+    //may have to go back to big number later.
+    if (animal['species'] === 0) {
+        lions.push(animal);
+    }
+    else {
+        plebs.push(animal);
+    }
+  }
   if (!lions || !plebs) {
     return(<Loading/>);
   }
-  else {
     return(
     <div>
       <NewLionButton/>
@@ -208,25 +212,31 @@ const Connected = () => {
         </div>
       </div>
     </div>)
-  }
+
 }
 
+useEffect(() => {
+    const onLoad = async () => {
+      await connectWallet();
+    };
+    window.addEventListener('load', onLoad);
+    return () => window.removeEventListener('load', onLoad);
+  }, []);
 const getAnimals = async () => {
     const provider2 = new ethers.providers.Web3Provider(window.ethereum);
-  const jungletoken2 = new ethers.Contract(
-        jungleTokenContractAddress.JungleToken,
-        JungleTokenArtifact.abi,
-        provider2.getSigner(0)
-  );
-  const wait_for_lions = await jungletoken2.getAnimals(walletAddress,true);
-  setLions(wait_for_lions);
-  const wait_for_plebs = await jungletoken2.getAnimals(walletAddress,false);
-  setPlebs(wait_for_plebs);
+    const jungletoken2 = new ethers.Contract(
+          jungleTokenContractAddress.JungleToken,
+    JungleTokenArtifact.abi,
+          provider2.getSigner(0)
+    );
+    const theAnimals = await jungletoken2.getAnimalsAndMore(walletAddress,jungler[0],jungler[1],walletAddress,0);
+    setAnimals(theAnimals);
+    setJungler([0,false]);
+    console.log(theAnimals);
 }
 
 useEffect(() => {
     if (walletAddress) {
-      console.log('Fetching tweets...');
       getAnimals();
     }
   }, [walletAddress]);
